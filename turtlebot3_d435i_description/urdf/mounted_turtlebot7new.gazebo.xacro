@@ -1,0 +1,463 @@
+<?xml version="1.0"?>
+<robot name="turtlebot5" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <gazebo reference="base_link">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  
+  <gazebo reference="base_footprint">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <gazebo reference="wheel_left_link">
+    <mu1>10000</mu1>
+    <mu2>10000</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>1 0 0</fdir1>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="wheel_right_link">
+    <mu1>10000</mu1>
+    <mu2>10000</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>1 0 0</fdir1>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="caster_back_right_link">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>1.0</maxVel>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="caster_back_left_link">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>1.0</maxVel>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="imu_link">
+    <sensor type="imu" name="imu">
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+    </sensor>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="turtlebot3_waffle_pi_controller" filename="libgazebo_ros_diff_drive.so">
+      <commandTopic>/cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometrySource>world</odometrySource>
+      <publishOdomTF>true</publishOdomTF>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <publishWheelTF>false</publishWheelTF>
+      <publishTf>true</publishTf>
+      <publishWheelJointState>true</publishWheelJointState>
+      <legacyMode>false</legacyMode>
+      <updateRate>30</updateRate>
+      <leftJoint>wheel_left_joint</leftJoint>
+      <rightJoint>wheel_right_joint</rightJoint>
+      <wheelSeparation>0.287</wheelSeparation>
+      <wheelDiameter>0.066</wheelDiameter>
+      <wheelAcceleration>1</wheelAcceleration>
+      <wheelTorque>10</wheelTorque>
+      <rosDebugLevel>na</rosDebugLevel>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+      <alwaysOn>true</alwaysOn>
+      <bodyName>imu_link</bodyName>
+      <frameName>imu_link</frameName>
+      <topicName>imu</topicName>
+      <serviceName>imu_service</serviceName>
+      <gaussianNoise>0.0</gaussianNoise>
+      <updateRate>0</updateRate>
+      <imu>
+        <noise>
+          <type>gaussian</type>
+          <rate>
+            <mean>0.0</mean>
+            <stddev>2e-4</stddev>
+            <bias_mean>0.0000075</bias_mean>
+            <bias_stddev>0.0000008</bias_stddev>
+          </rate>
+          <accel>
+            <mean>0.0</mean>
+            <stddev>1.7e-2</stddev>
+            <bias_mean>0.1</bias_mean>
+            <bias_stddev>0.001</bias_stddev>
+          </accel>
+        </noise>
+      </imu>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="base_scan">
+    <material>Gazebo/FlatBlack</material>
+    <sensor type="ray" name="lds_lfcd_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>5</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>0.0</min_angle>
+            <max_angle>6.28319</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.120</min>
+          <max>3.5</max>
+          <resolution>0.015</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_lds_lfcd_controller" filename="libgazebo_ros_laser.so">
+        <topicName>scan</topicName>
+        <frameName>base_scan</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+
+<!--link : https://www.raspberrypi.org/documentation/hardware/camera/-->
+  <gazebo reference="camera_rgb_frame">
+    <material>Gazebo/FlatBlack</material>
+    <sensor type="camera" name="Pi Camera">
+      <always_on>false</always_on>
+      <visualize>false</visualize>
+      <camera>
+          <horizontal_fov>1.085595</horizontal_fov>
+          <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+          </image>
+          <clip>
+              <near>0.03</near>
+              <far>100</far>
+          </clip>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>false</alwaysOn>
+        <updateRate>30.0</updateRate>
+        <cameraName>camera</cameraName>
+        <frameName>camera_rgb_optical_frame</frameName>
+        <imageTopicName>rgb/image_raw</imageTopicName>
+        <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="camera_link">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="camera_rgb_optical_frame">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+    <!-- World -->
+  <gazebo reference="world"/>
+
+  <!-- ros_control plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <controlPeriod>0.001</controlPeriod>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+
+  <!-- Link1 -->
+  <gazebo reference="link1">
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <mu1>30.0</mu1>
+      <mu2>30.0</mu2>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.001</minDepth>
+      <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- Link2 -->
+  <gazebo reference="link2">
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <mu1>30.0</mu1>
+      <mu2>30.0</mu2>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.001</minDepth>
+      <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- Link3 -->
+  <gazebo reference="link3">
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <mu1>30.0</mu1>
+      <mu2>30.0</mu2>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.001</minDepth>
+      <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- Link4 -->
+  <gazebo reference="link4">
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <mu1>30.0</mu1>
+      <mu2>30.0</mu2>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.001</minDepth>
+      <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- Link5 -->
+  <gazebo reference="link5">
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <mu1>30.0</mu1>
+      <mu2>30.0</mu2>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.001</minDepth>
+      <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- gripper_link -->
+  <gazebo reference="gripper_link">
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <mu1>30.0</mu1>
+      <mu2>30.0</mu2>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.001</minDepth>
+      <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- gripper_link_sub -->
+  <gazebo reference="gripper_link_sub">
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <mu1>30.0</mu1>
+      <mu2>30.0</mu2>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.001</minDepth>
+      <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- end effector link -->
+  <gazebo reference="end_effector_link">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+
+  <gazebo>
+    <!-- loading plugin: mimic joints works in gazebo now -->
+    <plugin name="gazebo_gripper_ros_control" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
+      <joint>gripper</joint>
+      <mimicJoint>gripper_sub</mimicJoint>
+      <multiplier>1.0</multiplier>
+      <offset>0.0</offset>
+    </plugin>
+  </gazebo>
+
+  <!-- camera -->
+  <!--<gazebo reference="camera_link">
+    <sensor type="camera" name="intel_realsense_r200">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.02974</horizontal_fov>
+        <image>
+          <width>1920</width>
+          <height>1080</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>camera/color</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>-->
+
+  <gazebo reference="realsense2_camera_link">
+      <alwaysOn>true</alwaysOn>
+      <material>Gazebo/FlatBlack</material>
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+      <gravity>1</gravity>
+      <!--<mu>1</mu>-->
+      <mu2>1</mu2>
+      <fdir1>0 0 0</fdir1>
+      <!--<slip1>0</slip1>
+      <slip2>0</slip2>-->
+      <kp>1e+13</kp>
+      <kd>1</kd>
+      <!--<max_vel>0.01</max_vel>
+      <min_depth>0</min_depth>-->
+      <sensor name="intel_realsense2_d435" type="camera">
+        <camera name="head">
+          <horizontal_fov>1.211258501</horizontal_fov>
+          <image>
+            <width>1920</width>
+            <height>1080</height>
+            <format>RGB_INT8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <visualize>1</visualize>
+      </sensor>
+      <sensor name="realsense2ired1" type="camera">
+        <camera name="realsense2_camera_right_ir_frame">
+          <horizontal_fov>1.487020523</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+            <format>L_INT8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.05</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>90</update_rate>
+        <visualize>0</visualize>
+      </sensor>
+      <sensor name="realsense2ired2" type="camera">
+        <camera name="realsense2_camera_left_ir_frame">
+          <horizontal_fov>1.487020523</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+            <format>L_INT8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.05</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>90</update_rate>
+        <visualize>0</visualize>
+      </sensor>
+      <sensor name="realsense2_camera_depth_frame" type="depth">
+        <camera name="realsense2_camera_depth_frame">
+          <horizontal_fov>1.487020523</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.100</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>90</update_rate>
+        <visualize>0</visualize>
+      </sensor>
+        <plugin name="camera_controller" filename="librealsense_gazebo_plugin.so">
+        <alwaysOn>true</alwaysOn>
+        <prefix>"realsense2_camera"</prefix>
+      	<depthUpdateRate>60.0</depthUpdateRate>
+      	<colorUpdateRate>60.0</colorUpdateRate>
+      	<infraredUpdateRate>60.0</infraredUpdateRate>
+      	<depthTopicName>depth/image_raw</depthTopicName>
+      	<depthCameraInfoTopicName>depth/camera_info</depthCameraInfoTopicName>
+      	<colorTopicName>color/image_raw</colorTopicName>
+      	<colorCameraInfoTopicName>color/camera_info</colorCameraInfoTopicName>
+      	<infrared1TopicName>infra1/image_raw</infrared1TopicName>
+      	<infrared1CameraInfoTopicName>infra1/camera_info</infrared1CameraInfoTopicName>
+      	<infrared2TopicName>infra2/image_raw</infrared2TopicName>
+      	<infrared2CameraInfoTopicName>infra2/camera_info</infrared2CameraInfoTopicName>
+      	<colorOpticalframeName>"realsense2_camera_base_link"</colorOpticalframeName>
+      	<depthOpticalframeName>"realsense2_camera_base_link"</depthOpticalframeName>
+      	<infrared1OpticalframeName>"realsense2_camera_right_ir_frame"</infrared1OpticalframeName>
+      	<infrared2OpticalframeName>"realsense2_camera_left_ir_frame"</infrared2OpticalframeName>
+      	<rangeMinDepth>0.2</rangeMinDepth>
+      	<rangeMaxDepth>10.0</rangeMaxDepth>
+      	<pointCloud>false</pointCloud>
+      	<pointCloudTopicName>depth/points</pointCloudTopicName>
+      	<pointCloudCutoff>0.5</pointCloudCutoff>
+      </plugin>
+  </gazebo>
+
+</robot>
