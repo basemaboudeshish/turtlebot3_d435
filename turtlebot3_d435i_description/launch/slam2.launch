@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<launch>
+  <include file="$(find turtlebot3_d435i_description)/launch/gazebo_without_rviz2.launch" />
+  <!--<include file="$(find open_manipulator_teleop/launch/open_manipulator_teleop_keyboard.launch" />-->
+  
+  <!-- Arguments -->
+  <!--<arg name="model" default="waffle_pi" doc="model type [waffle_pi]"/>-->
+  <arg name="slam_methods" default="gmapping" doc="slam type [hector]"/>
+  <arg name="configuration_basename" default="turtlebot3_lds_2d.lua"/>
+  <arg name="open_rviz" default="true"/>
+
+
+  <!-- TurtleBot3 -->
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find turtlebot3_d435i_description)/urdf/mounted_turtlebot7.urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+  <!--<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher1">
+    <param name="publish_frequency" type="double" value="50.0" />
+  </node>-->
+
+  <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter" output="screen" >
+    <rosparam command="load" file="$(find open_manipulator_with_tb3_tools)/config/scan_data_filter.yaml" />
+  </node>
+
+  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
+  <include file="$(find turtlebot3_d435i_description)/launch/hector.launch">
+    <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+  </include>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <!--<node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find turtlebot3_slam)/rviz/turtlebot3_hector.rviz"/>-->
+
+    <node pkg= "rviz" type= "rviz" name="rviz" required="true"
+          args="-d $(find turtlebot3_manipulation_slam)/rviz/turtlebot3_manipulation_slam.rviz"/>
+  </group>
+
+  <!-- Launch the Open Manipulator teleop keyboard node 
+  <node pkg="open_manipulator_teleop" type="open_manipulator_telyboard" name="open_manipulator_teleop_keyboard" output="screen" />-->
+  <!--<node pkg="turtlebot3_teleop" type="turtlebot3_teleop_key" name="turtlebot3_teleop_keyboard"  output="screen" />eop_ke-->
+
+  <!-- Launch the Open Manipulator teleop keyboard node-->
+  <node pkg="turtlebot3_teleop" type="turtlebot3_teleop_key" name="turtlebot3_teleop_keyboard"  output="screen" />
+  <!--<node pkg="open_manipulator_teleop" type="open_manipulator_teleop_keyboard" name="open_manipulator_teleop_keyboard" output="screen" />-->
+  <param name="cmd_vel_topic" type="string" value="/cmd_vel" />
+
+
+
+
+</launch>
