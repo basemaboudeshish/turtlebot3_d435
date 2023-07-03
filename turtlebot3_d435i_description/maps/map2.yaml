@@ -1,0 +1,7 @@
+image: /home/basem/new_ws2/src/turtlebot3_d435i_description/maps/map2.pgm
+resolution: 0.050000
+origin: [-51.224998, -51.224998, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+
