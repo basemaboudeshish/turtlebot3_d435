@@ -2,7 +2,7 @@
   <include file="$(find turtlebot3_d435i_description)/launch/gazebo_without_rviz2.launch" />
   <!-- Arguments -->
   <arg name="model" default="waffle_pi" doc="model type [waffle_pi]"/>
-  <arg name="map_file" default="$(find turtlebot3_d435i_description)/maps/map2.yaml"/>
+  <arg name="map_file" default="$(find turtlebot3_d435i_description)/maps/map3.yaml"/>
   <arg name="open_rviz" default="true"/>
   <arg name="move_forward_only" default="false"/>
 
@@ -41,5 +41,5 @@
           args="-d $(find turtlebot3_d435i_description)/rviz/turtlebot3_manipulation_navigation.rviz" output="screen"/>
   </group>
 
-  <node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 0 0 0 0 base_footprint map 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 0.05 0 0 0 base_link map 100"/>
 </launch>
