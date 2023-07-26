@@ -7,7 +7,7 @@ global_costmap:
   rolling_window: false
   static_map: true
   track_unknown_space: true
-  allow_unknow: true
+  allow_unknown: true
   plugins:
     - {name: static_layer,  type: "costmap_2d::StaticLayer"}
     - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer"}
