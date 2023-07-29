@@ -133,5 +133,5 @@ roslaunch turtlebot3_d435i_description navigation.launch
 
 
 Challenges
-1- Realsense camera plugin was updated and it does not work. So, keeping a backup of camera dae files would be a good idea incase of any problem.
- 2- The robot can not move through the obstacles due to the rotation of laser scan with the robot rotation. This is unresolved problem may be due to odometry issue.
+1- Merging Realsense camera plugin with turtlebot3 gazebo file.
+2- The robot sometimes can not move through the obstacles due to a problem in the map.
